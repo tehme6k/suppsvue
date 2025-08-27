@@ -6,8 +6,8 @@ use App\Models\Mpr;
 use App\Http\Requests\StoreMprRequest;
 use App\Http\Requests\UpdateMprRequest;
 use App\Models\Project;
-use GuzzleHttp\Psr7\Request;
 use Inertia\Inertia;
+use Spatie\Activitylog\Facades\Activity;
 
 class MprController extends Controller
 {
@@ -50,28 +50,28 @@ class MprController extends Controller
         // $projects->append('full_project_name');
         // dd($projects);
 
-            // $search = $request->input('search');
-            // $projects = Project::when($search, function ($query) use ($search) {
-            //     $query->where('name', 'like', '%' . $search . '%');
-            // })->get();
+        // $search = $request->input('search');
+        // $projects = Project::when($search, function ($query) use ($search) {
+        //     $query->where('name', 'like', '%' . $search . '%');
+        // })->get();
 
-    $query = Project::query();
+        $query = Project::query();
 
-    $query->when(request('search'), function ($q, $search) {
-        $q->where('name', 'like', "%{$search}%");
-    });
+        $query->when(request('search'), function ($q, $search) {
+            $q->where('name', 'like', "%{$search}%");
+        });
 
-    // dd($query);
+        // dd($query);
 
-    $projects = $query->get();
+        $projects = $query->get();
 
-// dd($projects);
+        // dd($projects);
 
 
-    return Inertia::render('Mprs/Create', [
-        'projects' => $projects,
-        'filters' => request()->only('search'),
-    ]);
+        return Inertia::render('Mprs/Create', [
+            'projects' => $projects,
+            'filters' => request()->only('search'),
+        ]);
     }
 
     /**
@@ -82,16 +82,19 @@ class MprController extends Controller
 
         foreach ($request->items as $item) {
             $mpr = Mpr::where('project_id', $item['project_id'])->orderBy('version_nbr', 'desc')->first();
+            $project = Project::find($item['project_id']);
             if ($mpr) {
-                // Create new Mpr with incremented version number
+                // Create new Mpr with incremented version number                
                 $item['version_nbr'] = $mpr->version_nbr + 1;
                 Mpr::create($item);
             } else {
                 // Create new Mpr
                 $item['version_nbr'] = 1;
                 Mpr::create($item);
-            }           
+            }
         }
+
+        // dd($mpr);
 
         return redirect()->route('mprs.index')->with('success', 'Mpr(s) created successfully.');
     }

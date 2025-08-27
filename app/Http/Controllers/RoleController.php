@@ -41,7 +41,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Roles/Create',[
+        return Inertia::render('Roles/Create', [
             'permissions' => Permission::pluck('name')->all()
         ]);
     }
@@ -57,8 +57,15 @@ class RoleController extends Controller
             'permissions' => 'required'
         ]);
 
-        $role = Role::create(['name'=>$request->name]);
+        $role = Role::create(['name' => $request->name]);
         $role->syncPermissions($request->permissions);
+
+        // Log the activity
+        activity()
+            ->performedOn($role)
+            ->causedBy(auth()->user()) // Assuming a logged-in user caused the action
+            ->withProperties(['permissions' => $request->permissions])
+            ->log('Permissions assigned to role');
 
         return to_route('roles.index')->with('success', 'Role created successfully.');
     }
@@ -99,6 +106,13 @@ class RoleController extends Controller
         $role->save();
 
         $role->syncPermissions($request->permissions);
+
+        // Log the activity
+        activity()
+            ->performedOn($role)
+            ->causedBy(auth()->user()) // Assuming a logged-in user caused the action
+            ->withProperties(['permissions' => $request->permissions])
+            ->log('Permissions assigned to role');
 
         return to_route('roles.index')->with('success', 'Role updated successfully.');
     }

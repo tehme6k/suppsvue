@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { ChartBarStacked, LayoutGrid, PackageSearch, FolderKey, BookPlus, Users, Notebook } from 'lucide-vue-next';
+import { ChartBarStacked, LayoutGrid, PackageSearch, FolderKey, BookPlus, Users, Notebook, Logs } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -48,6 +48,11 @@ const footerNavItems: NavItem[] = [
         title: 'Roles',
         href: '/roles',
         icon: Notebook,
+    },
+        {
+        title: 'Activity Log',
+        href: '/activities',
+        icon: Logs,
     },
     // {
     //     title: 'Documentation',

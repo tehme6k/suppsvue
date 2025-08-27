@@ -16,20 +16,20 @@ class UserController extends Controller
      */
     public function index()
     {
-     $query = User::query();
+        $query = User::query();
 
-    $query->when(request('search'), function ($q, $search) {
-        $q->where('name', 'like', "%{$search}%")
-        ->orWhere('email', 'like', "%{$search}%");
-    });
+        $query->when(request('search'), function ($q, $search) {
+            $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+        });
 
-    $users = $query->paginate(10)->withQueryString();
-    $users->load('roles');
+        $users = $query->paginate(10)->withQueryString();
+        $users->load('roles');
 
-    return Inertia::render('Users/Index', [
-        'users' => $users,
-        'filters' => request()->only('search'),
-    ]);
+        return Inertia::render('Users/Index', [
+            'users' => $users,
+            'filters' => request()->only('search'),
+        ]);
     }
 
     /**
@@ -37,7 +37,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Users/Create',[
+        return Inertia::render('Users/Create', [
             'roles' => Role::pluck('name')->all()
         ]);
     }
@@ -49,9 +49,19 @@ class UserController extends Controller
     {
         $user = User::create(
             $request->only(['name', 'email']) +
-            ['password' => Hash::make($request->password)]
+                ['password' => Hash::make($request->password)]
         );
         $user->syncRoles($request->roles);
+
+        // Log the activity
+        // activity()
+        //     ->performedOn($user)
+        //     ->causedBy(auth()->user()) // Assuming a logged-in user caused the action
+        //     ->withProperties(
+        //         [
+        //             'role' => $request->roles                    
+        //         ])
+        //     ->log('Role assigned to user');
 
 
         return to_route('users.index')->with('success', 'User created successfully.');
@@ -92,11 +102,19 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        $user->save();
+        if ($user->save()) {
+            if ($user->syncRoles($request->roles)) {
+                // activity()
+                //     ->performedOn($user)
+                //     ->causedBy(auth()->user()) // Assuming a logged-in user caused the action
+                //     ->withProperties(['role' => $request->roles])
+                //     ->log('Role assigned to user');
 
-        $user->syncRoles($request->roles);
-
-        return to_route('users.index')->with('success', 'User updated successfully.');
+                return to_route('users.index')->with('success', 'User updated successfully.');
+            }
+        }else{
+            return to_route('users.index')->with('error', 'User not updated.');
+        }
     }
 
     /**

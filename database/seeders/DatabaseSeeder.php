@@ -20,18 +20,18 @@ class DatabaseSeeder extends Seeder
         // Category::factory(15)->create();
         // Product::factory(30)->create();
         // User::factory(10)->create();
+        User::factory()->create([
+            'name' => 'Mothy',
+            'email' => 'moshimoshi6k@gmail.com',
+            'password' => bcrypt('altoidz012'),
+        ]);
+
         $this->call([
             CategorySeeder::class,
             ProductSeeder::class,
             ProjectSeeder::class,
             MprSeeder::class,
             SpatieSeeder::class,
-        ]);
-
-        User::factory()->create([
-            'name' => 'Mothy',
-            'email' => 'moshimoshi6k@gmail.com',
-            'password' => bcrypt('altoidz012'),
         ]);
     }
 }

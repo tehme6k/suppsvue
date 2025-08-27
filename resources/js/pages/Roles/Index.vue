@@ -79,7 +79,7 @@ function handleDelete(id: number) {
 
             <!-- Table to display roles -->
             <div class="p-3">
-                <h1 class="text-2xl font-bold mb-4">Users</h1>
+                <h1 class="text-2xl font-bold mb-4">Roles</h1>
 
                 <div class="overflow-x-auto mt-4">
                     <table class="w-full text-sm text-left text-gray-700">

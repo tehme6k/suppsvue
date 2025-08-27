@@ -8,10 +8,47 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
+    // use LogsActivity;
+
+  
+    // public function getActivitylogOptions(): LogOptions
+    // {
+    //     return LogOptions::defaults()
+    //         ->logOnlyDirty() // Log only changed attributes
+    //         ->logOnly($this->getLogOnlyAttributes())
+    //         ->setDescriptionForEvent(function(string $eventName){
+    //             if($eventName === 'updated'){
+    //                 return "User roles synced.";
+    //             }
+    //             return "User {$eventName}";
+    //         })
+    //         ->dontSubmitEmptyLogs(); // Define specific attributes to log
+    //     // ->useLogName('my_model_log');
+    // }
+
+    // public function syncRoles($roles){
+    //     parent::syncRoles($roles);
+
+    //     activity()
+    //         ->performedOn($this)
+    //         ->causedBy(auth()->user())
+    //         ->withProperties(['roles_synced' => $roles])
+    //         ->log('roles_synced');
+    // }
+
+    // protected function getLogOnlyAttributes(): array
+    // {
+    //     return ['name', 'email']; // Replace with your actual attributes
+    // }
+
+
+
+
 
     /**
      * The attributes that are mass assignable.

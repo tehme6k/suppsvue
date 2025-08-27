@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\MprController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\Activitylog\Contracts\Activity;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -19,6 +21,7 @@ Route::resource('categories', CategoryController::class)->middleware(['auth', 'v
 Route::resource('products', ProductController::class)->middleware(['auth', 'verified']);
 Route::resource('projects', ProjectController::class)->middleware(['auth', 'verified']);
 Route::resource('mprs', MprController::class)->middleware(['auth', 'verified']);
+Route::resource('activities', ActivityController::class)->only(['index'])->middleware(['auth', 'verified']);
 
 require __DIR__.'/users.php';
 require __DIR__.'/roles.php';
