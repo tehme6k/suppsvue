@@ -43,9 +43,16 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
-            'auth' => [
-                'user' => $request->user(),
-            ],
+                'auth' => [
+                    'user' => $request->user() ? [
+                        'id' => $request->user()->id,
+                        'name' => $request->user()->name,
+                        'email' => $request->user()->email,
+                        'roles' => $request->user()->getRoleNames(), // Get role names
+                        // 'permissions' => $request->user()->getAllPermissions()->pluck('name'), // Get all permission names
+                    ] : null,
+                    'permissions' => fn() => $request->user()?->getAllPermissions()->pluck('name') ?? []
+                ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),

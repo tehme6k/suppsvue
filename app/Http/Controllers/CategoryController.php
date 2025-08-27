@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\User;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
@@ -14,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-    $query = Category::query();
+     $query = Category::query();
 
     $query->when(request('search'), function ($q, $search) {
         $q->where('name', 'like', "%{$search}%")

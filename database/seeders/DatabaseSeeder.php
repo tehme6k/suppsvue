@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             ProductSeeder::class,
             ProjectSeeder::class,
-            MprSeeder::class
+            MprSeeder::class,
+            SpatieSeeder::class,
         ]);
 
         User::factory()->create([
