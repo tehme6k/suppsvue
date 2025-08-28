@@ -51,8 +51,35 @@ class UserController extends Controller
             $request->only(['name', 'email']) +
             ['password' => Hash::make($request->password)]
         );
-        $user->syncRoles($request->roles);
 
+       // Get the user's current roles
+        $oldRoles = $user->getRoleNames()->toArray();
+
+        // Get the new roles from the request
+        $newRoles = $request->input('roles', []);
+
+        // dd($newRoles);
+
+        // Use syncRoles to update the user's roles
+        $user->syncRoles($newRoles);
+
+        // Get the user's new roles
+        $updatedRoles = $user->getRoleNames()->toArray();
+
+        // Compare the old and new roles to check for changes
+        $rolesHaveChanged = !empty(array_diff($oldRoles, $updatedRoles)) || !empty(array_diff($updatedRoles, $oldRoles));
+
+        if ($rolesHaveChanged) {
+            // Manually log the activity if roles have changed
+            activity()
+                ->performedOn($user)
+                ->causedBy(auth()->user()) // assuming the user is logged in
+                ->withProperties([
+                    'attributes' => ['roles' => $updatedRoles],
+                    'old' => ['roles' => $oldRoles]
+                ])
+                ->log("Updated user roles");
+        }
 
         return to_route('users.index')->with('success', 'User created successfully.');
     }
@@ -94,7 +121,34 @@ class UserController extends Controller
 
         $user->save();
 
-        $user->syncRoles($request->roles);
+               // Get the user's current roles
+        $oldRoles = $user->getRoleNames()->toArray();
+
+        // Get the new roles from the request
+        $newRoles = $request->input('roles', []);
+
+        // dd($newRoles);
+
+        // Use syncRoles to update the user's roles
+        $user->syncRoles($newRoles);
+
+        // Get the user's new roles
+        $updatedRoles = $user->getRoleNames()->toArray();
+
+        // Compare the old and new roles to check for changes
+        $rolesHaveChanged = !empty(array_diff($oldRoles, $updatedRoles)) || !empty(array_diff($updatedRoles, $oldRoles));
+
+        if ($rolesHaveChanged) {
+            // Manually log the activity if roles have changed
+            activity()
+                ->performedOn($user)
+                ->causedBy(auth()->user()) // assuming the user is logged in
+                ->withProperties([
+                    'attributes' => ['roles' => $updatedRoles],
+                    'old' => ['roles' => $oldRoles]
+                ])
+                ->log("Updated user roles");
+        }
 
         return to_route('users.index')->with('success', 'User updated successfully.');
     }

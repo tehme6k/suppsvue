@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use PDO;
+
 
 class SpatieSeeder extends Seeder
 {
@@ -41,6 +40,7 @@ class SpatieSeeder extends Seeder
         $createProjectPermission = Permission::create(['name' => 'project.create']);
         $editProjectPermission = Permission::create(['name' => 'project.edit']);
         $deleteProjectPermission = Permission::create(['name' => 'project.delete']);
+        $allPermission = Permission::create(['name' => 'all']);
 
         $permissions = [
             "category.create",
@@ -67,7 +67,8 @@ class SpatieSeeder extends Seeder
 
 
         // Assign permissions to roles
-        $adminRole->givePermissionTo([$createProjectPermission, $editProjectPermission, $deleteProjectPermission]);
+        $adminRole->givePermissionTo([$createProjectPermission, $editProjectPermission, $deleteProjectPermission, $allPermission]);
         $userRole->givePermissionTo([$createProjectPermission]);
+        User::find(1)->assignRole($adminRole);
     }
 }
