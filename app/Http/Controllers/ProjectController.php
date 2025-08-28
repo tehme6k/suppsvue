@@ -82,6 +82,10 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        if ($project->mprs()->exists()) {
+            return redirect()->back()->with('error', 'Cannot delete '.$project->name.' as it has associated mprs.');
+        }
+
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Project: ' . $project->name . ' deleted successfully.');
