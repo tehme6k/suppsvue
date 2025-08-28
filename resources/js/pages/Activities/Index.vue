@@ -96,7 +96,7 @@ const formatModelName = (subjectType: string | null): string => {
                     <div class="flex-1 space-y-1">
                       <div class="flex items-center justify-between">
                         <h3 class="text-sm font-medium">{{ activity.description }} - {{
-                          formatModelName(activity.subject_type) }} <span v-if="activity.subject.name">({{ activity.subject.name }})</span></h3>
+                          formatModelName(activity.subject_type) }} </h3>
                         <p class="text-sm text-gray-500">{{ new Date(activity.created_at).toLocaleString() }}</p>
                       </div>
                       <p></p>

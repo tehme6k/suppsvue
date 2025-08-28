@@ -144,6 +144,7 @@ class UserController extends Controller
                 ->performedOn($user)
                 ->causedBy(auth()->user()) // assuming the user is logged in
                 ->withProperties([
+                    'on' => ['user' => $user->name],
                     'attributes' => ['roles' => $updatedRoles],
                     'old' => ['roles' => $oldRoles]
                 ])
