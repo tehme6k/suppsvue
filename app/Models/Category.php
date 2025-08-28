@@ -16,7 +16,7 @@ class Category extends Model
 
     protected $guarded = [];
 
-        public function getActivitylogOptions(): LogOptions
+    public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->logOnly(['name', 'description']) // Log changes to the 'roles' relationship

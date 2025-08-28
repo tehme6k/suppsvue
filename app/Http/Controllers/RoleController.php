@@ -58,7 +58,34 @@ class RoleController extends Controller
         ]);
 
         $role = Role::create(['name'=>$request->name]);
-        $role->syncPermissions($request->permissions);
+        
+       // Get the roles current permissions
+        $oldPermissions = $role->getPermissionNames()->toArray();
+
+        // Get the new roles from the request
+        $newPermissions = $request->input('permissions', []);
+
+        // Use syncRoles to update the user's roles
+        $role->syncPermissions($newPermissions);
+
+        // Get the user's new roles
+        $updatedPermissions = $role->getPermissionNames()->toArray();
+
+        // Compare the old and new roles to check for changes
+        $permissionsHaveChanged = !empty(array_diff($oldPermissions, $updatedPermissions)) || !empty(array_diff($updatedPermissions, $oldPermissions));
+
+        if ($permissionsHaveChanged) {
+            // Manually log the activity if roles have changed
+            activity()
+                ->performedOn($role)
+                ->causedBy(auth()->user()) // assuming the user is logged in
+                ->withProperties([
+                    'on' => ['role' => $role->name],
+                    'attributes' => ['permissions' => $updatedPermissions],
+                    'old' => ['permissions' => $oldPermissions]
+                ])
+                ->log("Updated role permissions");
+        }
 
         return to_route('roles.index')->with('success', 'Role created successfully.');
     }
@@ -98,7 +125,35 @@ class RoleController extends Controller
         $role->name = $request->name;
         $role->save();
 
-        $role->syncPermissions($request->permissions);
+
+
+       // Get the roles current permissions
+        $oldPermissions = $role->getPermissionNames()->toArray();
+
+        // Get the new roles from the request
+        $newPermissions = $request->input('permissions', []);
+
+        // Use syncRoles to update the user's roles
+        $role->syncPermissions($newPermissions);
+
+        // Get the user's new roles
+        $updatedPermissions = $role->getPermissionNames()->toArray();
+
+        // Compare the old and new roles to check for changes
+        $permissionsHaveChanged = !empty(array_diff($oldPermissions, $updatedPermissions)) || !empty(array_diff($updatedPermissions, $oldPermissions));
+
+        if ($permissionsHaveChanged) {
+            // Manually log the activity if roles have changed
+            activity()
+                ->performedOn($role)
+                ->causedBy(auth()->user()) // assuming the user is logged in
+                ->withProperties([
+                    'on' => ['role' => $role->name],
+                    'attributes' => ['permissions' => $updatedPermissions],
+                    'old' => ['permissions' => $oldPermissions]
+                ])
+                ->log("Updated role permissions");
+        }
 
         return to_route('roles.index')->with('success', 'Role updated successfully.');
     }
