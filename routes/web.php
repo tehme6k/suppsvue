@@ -22,6 +22,7 @@ Route::resource('projects', ProjectController::class)->middleware(['auth', 'veri
 Route::resource('mprs', MprController::class)->middleware(['auth', 'verified']);
 Route::resource('activities', ActivityController::class)->only(['index'])->middleware(['auth', 'verified']);
 
+require __DIR__.'/formulas.php';
 require __DIR__.'/users.php';
 require __DIR__.'/roles.php';
 require __DIR__.'/settings.php';

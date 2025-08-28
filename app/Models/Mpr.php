@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -20,6 +21,7 @@ class Mpr extends Model
         'can_edit',
     ];
 
+    // logging functions
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -28,6 +30,7 @@ class Mpr extends Model
             ->dontSubmitEmptyLogs(); // Prevent logging if no changes occurred
     }
 
+    // functions to use inside model
     public static function createMany(array $records)
     {
         foreach ($records as $record) {
@@ -35,8 +38,14 @@ class Mpr extends Model
         }
     }
 
+    // model relationship functions
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function formulas(): HasMany
+    {
+        return $this->hasMany(Formula::class);
     }
 }

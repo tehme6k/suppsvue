@@ -121,7 +121,7 @@ class UserController extends Controller
 
         $user->save();
 
-               // Get the user's current roles
+        // Get the user's current roles
         $oldRoles = $user->getRoleNames()->toArray();
 
         // Get the new roles from the request

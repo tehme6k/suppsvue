@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -16,6 +17,7 @@ class Product extends Model
 
     protected $guarded = [];
 
+    // logging functions
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -25,6 +27,7 @@ class Product extends Model
     }
 
 
+    // functions to use inside controller
     public static function createMany(array $records)
     {
         foreach ($records as $record) {
@@ -32,8 +35,14 @@ class Product extends Model
         }
     }
 
+    // model relationships
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+        public function formulas(): HasMany
+    {
+        return $this->HasMany(Formula::class);
     }
 }
